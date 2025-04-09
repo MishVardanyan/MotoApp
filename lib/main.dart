@@ -1,52 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
-import 'package:yandex_mapkit_demo/presentation/navigation/bottom_nav_bar.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/auth/login_screen.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/auth/register_screen.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/vehicle/vehicle_details_screen.dart';
+import 'package:yandex_mapkit_demo/services/auth_service.dart';
+import 'presentation/navigation/app_routes.dart';
 
-void main() {
-  AndroidYandexMap.useAndroidViewSurface = true;
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
-  runApp(const MaterialApp(home: MainScreen()));
+  await AuthService.loadToken(); 
+  runApp(const MyApp());
 }
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  String? token;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadToken();
-  }
-
-  Future<void> _loadToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      token = prefs.getString('auth_token');
-      isLoading = false;
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return SafeArea(
-      child: token == null ? const LoginScreen() : Scaffold(bottomNavigationBar: BottomNavScreen()),
+    return MaterialApp.router(
+      routerConfig: router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

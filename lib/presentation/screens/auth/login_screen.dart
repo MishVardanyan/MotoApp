@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit_demo/data/repositories/auth_repo.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/home/home_screen.dart';
-import 'package:yandex_mapkit_demo/presentation/navigation/bottom_nav_bar.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/auth/register_screen.dart'; // ✅ Ավելացրու գրանցման էկրանը
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,7 +20,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    final statusCode = await login(_emailController.text, _passwordController.text);
+    final statusCode = await login(
+      _emailController.text,
+      _passwordController.text,
+    );
 
     setState(() => _isLoading = false);
 
@@ -30,10 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Вход выполнен успешно!')),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => BottomNavScreen()),
-      );
+      context.go('/home'); // ✅ Բացեք հիմնական էջը որպես "հիմնական"
     } else if (statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Неверный email или пароль!')),
@@ -86,10 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                  );
+                  context.push('/register'); // ✅ գրանցում
                 },
                 child: const Text('Нет аккаунта? Зарегистрироваться'),
               ),

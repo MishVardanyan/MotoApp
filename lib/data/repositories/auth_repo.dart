@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yandex_mapkit_demo/services/auth_service.dart';
 
 Future<int> login(String email, String password) async {
   final url = Uri.parse('http://5.188.114.223:4000/api/users/login');
@@ -21,6 +22,7 @@ Future<int> login(String email, String password) async {
       final token = data['token'];
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', token);
+      AuthService.token = token;
     } 
 
     return response.statusCode;

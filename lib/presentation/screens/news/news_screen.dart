@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit_demo/data/models/news_model.dart';
 import 'package:yandex_mapkit_demo/data/repositories/news_repo.dart';
 import 'package:yandex_mapkit_demo/presentation/navigation/bottom_nav_bar.dart';
 
 class NewsScreen extends StatefulWidget {
+     final VoidCallback? onBack;
+
+  const NewsScreen({Key? key, this.onBack}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _NewsScreen();
 }
@@ -36,24 +40,22 @@ class _NewsScreen extends State<NewsScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, color: Color(0xFF333333)),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const BottomNavScreen()),
-                      );
-                    },
-                  ),
                   SizedBox(width: 8),
                   Text(
-                    "НОВОСТИ И СТАТЬИ",
+                    "НОВОСТИ",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    " И СТАТЬИ",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Magistral",
                     ),
                   ),
                 ],
