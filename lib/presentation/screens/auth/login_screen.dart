@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Вход выполнен успешно!')),
       );
-      context.go('/home'); // ✅ Բացեք հիմնական էջը որպես "հիմնական"
+      context.go('/home');
     } else if (statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Неверный email или пароль!')),
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
-                  context.push('/register'); // ✅ գրանցում
+                  context.push('/register');
                 },
                 child: const Text('Нет аккаунта? Зарегистрироваться'),
               ),

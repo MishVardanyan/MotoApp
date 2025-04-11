@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
 import 'package:yandex_mapkit_demo/data/repositories/moto_repo.dart';
-import 'package:yandex_mapkit_demo/data/repositories/trip_history_repo.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/vehicle/vehicle_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -26,41 +24,56 @@ class _HomeScreen extends State<HomeScreen> {
     loadMotos();
   }
 
-
+  double calculateScale(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth < 400 ? 3.0 : 4.0;
+  }
 
   Future<void> loadMotos() async {
     motos = await fetchMotoData();
+    bool _navigated = false;
     setState(() {
       for (var element in motos) {
-        if(element.currentLocation?.latitude!=null&&element.currentLocation?.longitude!=null){
-        _placemarks.add(
+        final id = 'point_${element.id}';
+        if (element.currentLocation?.latitude != null &&
+            element.currentLocation?.longitude != null) {
+          if (!_placemarks.any((p) => p.mapId.value == id)) {
+            _placemarks.add(
               PlacemarkMapObject(
-        text: PlacemarkText(
-          text: '${element.model.name}\n${''}\n${'Ленинский'}',
-          style: PlacemarkTextStyle(
-            size: 12,
-            color: Colors.black,
-            outlineColor: Colors.white,
-            placement: TextStylePlacement.right,
-            offset: -15.0,
-            offsetFromIcon: true
-          ),
-        ),
-        mapId: MapObjectId('point_${element.id}'),
-        point: Point(latitude: element.currentLocation!.latitude, longitude: element.currentLocation!.longitude), // Yerevan
-        icon: PlacemarkIcon.single(PlacemarkIconStyle(
-          image: BitmapDescriptor.fromAssetImage('assets/icons/geo_icon.png'),
-          scale: 4.0,
-          anchor: Offset(0.2, 0.9)
-        )),
-        opacity: 1.0,
-        onTap: (mapObject, point) {
-  //context.push('/home/moto-details', extra: element);
+                  text: PlacemarkText(
+                    text: '${element.model.name}\n${''}\n${'Ленинский'}',
+                    style: PlacemarkTextStyle(
+                        size: 12,
+                        color: Colors.black,
+                        outlineColor: Colors.white,
+                        placement: TextStylePlacement.right,
+                        offset: -15.0,
+                        offsetFromIcon: true),
+                  ),
+                  mapId: MapObjectId('point_${element.id}'),
+                  point: Point(
+                      latitude: element.currentLocation!.latitude,
+                      longitude: element.currentLocation!.longitude),
+                  icon: PlacemarkIcon.single(PlacemarkIconStyle(
+                      image: BitmapDescriptor.fromAssetImage(
+                          'assets/icons/geo_icon.png'),
+                      scale: 4.0,
+                      anchor: Offset(0.2, 0.9))),
+                  opacity: 1.0,
+                  onTap: (mapObject, point) {
+                    if (_navigated) return;
+                    _navigated = true;
 
-},
-),
-        );
-      }}
+                    context
+                        .push('/home/moto-details', extra: element)
+                        .then((_) {
+                      _navigated = false;
+                    });
+                  }),
+            );
+          }
+        }
+      }
     });
   }
 
@@ -82,8 +95,7 @@ class _HomeScreen extends State<HomeScreen> {
 
   late YandexMapController _mapController;
 
-  final List<PlacemarkMapObject> _placemarks = [
-  ];
+  final List<PlacemarkMapObject> _placemarks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -96,15 +108,13 @@ class _HomeScreen extends State<HomeScreen> {
             await _mapController.moveCamera(
               CameraUpdate.newCameraPosition(
                 const CameraPosition(
-                  target:
-                      Point(latitude: 55.7558, longitude: 37.6173), 
+                  target: Point(latitude: 55.7558, longitude: 37.6173),
                   zoom: 8.0,
                 ),
               ),
               animation: const MapAnimation(
                   type: MapAnimationType.smooth, duration: 1),
             );
-            
           },
           mapObjects: _placemarks,
         ),
@@ -173,51 +183,48 @@ class _HomeScreen extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(25),
                               ),
                               child: ListTile(
-                                leading: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: Colors.black, width: 1),
-                                    color: Colors.grey[200],
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          motos[index].model.imageUrl,
-                                          fit: BoxFit.cover,
-                                          width: 50,
-                                          height: 50,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                title: Text(motos[index]
-                                    .model
-                                    .name /*motos[index].model*/),
-                                subtitle: Text(
-                                  motos[index].lastUsedAt == null
-                                      ? 'последняя активность неизвестно'
-                                      : _formatLastUsedText(
-                                          motos[index].lastUsedAt!),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MotoDetailsScreen(moto: motos[index]),
-
+                                  leading: Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: Colors.black, width: 1),
+                                      color: Colors.grey[200],
                                     ),
-                                  );
-                                },
-                              ),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.network(
+                                            motos[index].model.imageUrl,
+                                            fit: BoxFit.cover,
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  title: Text(motos[index]
+                                      .model
+                                      .name /*motos[index].model*/),
+                                  subtitle: Text(
+                                    motos[index].lastUsedAt == null
+                                        ? 'последняя активность неизвестно'
+                                        : _formatLastUsedText(
+                                            motos[index].lastUsedAt!),
+                                  ),
+                                  trailing: Icon(Icons.arrow_forward_ios),
+                                  onTap: () {
+                                    context.push('/home/moto-details',
+                                        extra: motos[index]);
+                                  }),
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Divider(height: 1, color: Colors.grey[300]),
                           ],
                         );

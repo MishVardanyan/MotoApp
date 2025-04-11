@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yandex_mapkit_demo/data/models/trip_model.dart';
 
+/// Получение данных маршрута по его ID
 Future<List<RouteLocationModel>> fetchRouteData(String routeId) async {
   final url = Uri.parse('http://5.188.114.223:4000/api/motos/routes/$routeId/locations');
   final prefs = await SharedPreferences.getInstance();
@@ -24,12 +25,12 @@ Future<List<RouteLocationModel>> fetchRouteData(String routeId) async {
           .toList();
       return locations;
     } else if (response.statusCode == 401) {
-      throw Exception('Անթույլատրելի մուտք!');
+      throw Exception('Несанкционированный доступ!');
     } else {
-      throw Exception('API սխալ: ${response.statusCode}');
+      throw Exception('Ошибка API: ${response.statusCode}');
     }
   } catch (e) {
-    print('❌ API Error: $e');
+    print('❌ Ошибка API: $e');
     rethrow;
   }
 }

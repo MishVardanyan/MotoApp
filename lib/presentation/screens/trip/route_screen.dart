@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import 'package:yandex_mapkit_demo/data/models/trip_model.dart';
 import 'package:yandex_mapkit_demo/data/repositories/route_repo.dart';
-import 'package:yandex_mapkit_demo/presentation/navigation/app_routes.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/home/home_screen.dart';
 
 class RouteScreen extends StatefulWidget {
   final String routeId;
@@ -15,7 +13,8 @@ class RouteScreen extends StatefulWidget {
       {super.key,
       required this.routeId,
       required this.motoName,
-      required this.index, required this.date});
+      required this.index,
+      required this.date});
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -32,6 +31,11 @@ class _RouteScreenState extends State<RouteScreen> {
   void initState() {
     super.initState();
     fetchRoute();
+  }
+
+  double calculateScale(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth < 400 ? 3.0 : 4.0;
   }
 
   Future<void> fetchRoute() async {
@@ -69,12 +73,11 @@ class _RouteScreenState extends State<RouteScreen> {
             PlacemarkIconStyle(
                 image: BitmapDescriptor.fromAssetImage(
                     'assets/icons/geo_icon.png'),
-                scale: 4.0,
+                scale: calculateScale(context),
                 anchor: Offset(0.2, 0.9)),
           ),
           opacity: 1.0);
 
-      // 👉 End Marker (կարմիր)
       final PlacemarkMapObject endPlacemark = PlacemarkMapObject(
           mapId: const MapObjectId('end_point'),
           point: polylinePoints.last,
@@ -82,7 +85,7 @@ class _RouteScreenState extends State<RouteScreen> {
             PlacemarkIconStyle(
               image:
                   BitmapDescriptor.fromAssetImage('assets/icons/geo_icon2.png'),
-              scale: 4.0,
+              scale: calculateScale(context),
             ),
           ),
           opacity: 1.0);
@@ -90,15 +93,13 @@ class _RouteScreenState extends State<RouteScreen> {
       setState(() {
         mapObjects = [polyline, startPlacemark, endPlacemark];
       });
-
-      // 👁 Քարտեզը տեղաշարժում է դեպի սկիզբ
       await mapController.moveCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(target: polylinePoints.first, zoom: 14),
         ),
       );
     } catch (e) {
-      print('⚠️ Error loading route: $e');
+      print('Error loading route: $e');
     }
   }
 
@@ -134,16 +135,15 @@ class _RouteScreenState extends State<RouteScreen> {
                           ),
                         ),
                         Row(
-                          mainAxisSize: MainAxisSize
-                              .min, 
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const ImageIcon(AssetImage('assets/icons/time_icon.png')),
+                            const ImageIcon(
+                                AssetImage('assets/icons/time_icon.png')),
                             const SizedBox(width: 4),
                             Text(
                               widget.date,
                               style: const TextStyle(
                                 fontSize: 16,
-
                               ),
                             ),
                           ],

@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
-import 'package:yandex_mapkit_demo/data/models/news_model.dart';
 import 'package:yandex_mapkit_demo/data/models/trip_history_model.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/vehicle/trip_history_screen.dart';
 
+/// Получение списка поездок по ID мотоцикла и дате
 Future<TripListModel> fetchTripData(String id, DateTime date) async {
   final formattedDate =
       '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -24,16 +22,15 @@ Future<TripListModel> fetchTripData(String id, DateTime date) async {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final tripList = TripListModel.fromJson(data); // ✅ օգտագործիր Ցուցակի մոդելը
+      final tripList = TripListModel.fromJson(data); //  модель списка поездок
       return tripList;
     } else if (response.statusCode == 401) {
-      throw Exception('Անթույլատրելի մուտք!');
+      throw Exception('Несанкционированный доступ!');
     } else {
-      throw Exception('API սխալ: ${response.statusCode}');
+      throw Exception('Ошибка API: ${response.statusCode}');
     }
   } catch (e) {
-    print('❌ API Error: $e');
+    print('❌ Ошибка API: $e');
     rethrow;
   }
 }
-

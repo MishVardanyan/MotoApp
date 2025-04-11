@@ -1,13 +1,10 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit_demo/data/models/moto_data_model.dart';
 import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
-import 'package:yandex_mapkit_demo/data/models/route_model.dart';
 import 'package:yandex_mapkit_demo/data/models/trip_history_model.dart';
 import 'package:yandex_mapkit_demo/data/repositories/trip_history_repo.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/vehicle/calendar_screen.dart';
 import 'package:yandex_mapkit_demo/presentation/screens/vehicle/trip_history_screen.dart';
 
 class MotoDetailsScreen extends StatefulWidget {

@@ -34,7 +34,6 @@ class _AccountScreen extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final localProfile = profile;
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -51,9 +50,11 @@ class _AccountScreen extends State<AccountScreen> {
                       children: [
                         CircleAvatar(
                           radius: 40,
-                          backgroundImage: (localProfile?.image?.isNotEmpty ?? false)
-                              ? NetworkImage(localProfile!.image!)
-                              : const AssetImage('assets/images/avatar.png') as ImageProvider,
+                          backgroundImage:
+                              (localProfile?.image?.isNotEmpty ?? false)
+                                  ? NetworkImage(localProfile!.image!)
+                                  : const AssetImage('assets/images/avatar.png')
+                                      as ImageProvider,
                         ),
                         const SizedBox(height: 12),
                         Text(

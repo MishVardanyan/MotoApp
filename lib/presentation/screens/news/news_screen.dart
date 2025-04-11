@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit_demo/data/models/news_model.dart';
 import 'package:yandex_mapkit_demo/data/repositories/news_repo.dart';
-import 'package:yandex_mapkit_demo/presentation/navigation/bottom_nav_bar.dart';
 
 class NewsScreen extends StatefulWidget {
-     final VoidCallback? onBack;
+  final VoidCallback? onBack;
 
   const NewsScreen({Key? key, this.onBack}) : super(key: key);
   @override
@@ -70,7 +68,7 @@ class _NewsScreen extends State<NewsScreen> {
                 child: isLoading
                     ? Center(child: CircularProgressIndicator())
                     : newsList == null || newsList!.isEmpty
-                        ? Center(child: Text('Նորություններ չեն գտնվել։'))
+                        ? Center(child: Text('Новости не найдены'))
                         : ListView.builder(
                             itemCount: newsList!.length,
                             itemBuilder: (context, index) {

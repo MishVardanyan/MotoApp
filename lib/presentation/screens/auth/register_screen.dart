@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'login_screen.dart'; 
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -52,7 +52,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ошибка подключения или сервер недоступен')),
+        const SnackBar(
+            content: Text('Ошибка подключения или сервер недоступен')),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -74,20 +75,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Эл. почта'),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                    (value == null || !value.contains('@'))
-                        ? 'Введите действующий email'
-                        : null,
+                validator: (value) => (value == null || !value.contains('@'))
+                    ? 'Введите действующий email'
+                    : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(labelText: 'Пароль'),
-                validator: (value) =>
-                    (value == null || value.length < 6)
-                        ? 'Минимум 6 символов'
-                        : null,
+                validator: (value) => (value == null || value.length < 6)
+                    ? 'Минимум 6 символов'
+                    : null,
               ),
               const SizedBox(height: 24),
               SizedBox(

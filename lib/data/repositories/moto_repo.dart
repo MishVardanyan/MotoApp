@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
-import 'package:yandex_mapkit_demo/data/models/news_model.dart';
 
+
+/// Получение данных о мотоциклах пользователя
 Future<List<MotoModel>> fetchMotoData() async {
   final url = Uri.parse('http://5.188.114.223:4000/api/motos/user');
   final prefs = await SharedPreferences.getInstance();
@@ -25,13 +26,12 @@ Future<List<MotoModel>> fetchMotoData() async {
           .toList();
       return motos;
     } else if (response.statusCode == 401) {
-      throw Exception('Անթույլատրելի մուտք! Խնդրում ենք կրկին մուտք գործել');
+      throw Exception('Несанкционированный доступ! Пожалуйста, войдите снова.');
     } else {
-      throw Exception('API հարցման սխալ: ${response.statusCode}');
+      throw Exception('Ошибка запроса к API: ${response.statusCode}');
     }
   } catch (e) {
-    print('❌ API Error: $e');
+    print('❌ Ошибка API: $e');
     rethrow;
   }
 }
-

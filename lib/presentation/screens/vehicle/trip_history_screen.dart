@@ -1,10 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:yandex_mapkit_demo/data/models/route_model.dart';
 import 'package:yandex_mapkit_demo/data/models/trip_history_model.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/trip/route_screen.dart';
 
 class TripHistoryWidget extends StatelessWidget {
   final List<TripModel> routes;
@@ -12,7 +9,10 @@ class TripHistoryWidget extends StatelessWidget {
   final double bodyHeight;
 
   const TripHistoryWidget(
-      {super.key, required this.routes, required this.motoName,required this.bodyHeight});
+      {super.key,
+      required this.routes,
+      required this.motoName,
+      required this.bodyHeight});
 
   String formatTimeRange(DateTime start, DateTime end) {
     String formatTime(DateTime time) {
@@ -26,6 +26,7 @@ class TripHistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(bodyHeight);
     return AnimatedContainer(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.zero),
@@ -34,10 +35,9 @@ class TripHistoryWidget extends StatelessWidget {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
       width: MediaQuery.of(context).size.width,
-      height: (bodyHeight> 750)
-    ? 140 // default height
-    : max(0, MediaQuery.of(context).size.height - bodyHeight),
-
+      height: (bodyHeight > 800)
+          ? 140 // default height
+          : max(0, MediaQuery.of(context).size.height - bodyHeight),
       padding: const EdgeInsets.only(top: 15, left: 25, right: 25),
       clipBehavior: Clip.none,
       child: Column(
@@ -51,18 +51,17 @@ class TripHistoryWidget extends StatelessWidget {
                         return InkWell(
                           onTap: () {
                             context.push(
-  '/home/moto-details/route',
-  extra: {
-    'routeId': routes[index].routeId,
-    'motoName': motoName,
-    'index': index,
-    'date': formatTimeRange(
-      routes[index].startTime,
-      routes[index].endTime,
-    ),
-  },
-);
-
+                              '/home/moto-details/route',
+                              extra: {
+                                'routeId': routes[index].routeId,
+                                'motoName': motoName,
+                                'index': index,
+                                'date': formatTimeRange(
+                                  routes[index].startTime,
+                                  routes[index].endTime,
+                                ),
+                              },
+                            );
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 8),
