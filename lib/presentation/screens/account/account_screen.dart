@@ -58,9 +58,9 @@ class _AccountScreen extends State<AccountScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          (profile?.name != null && profile?.surname != null)
-                              ? '${profile!.name} ${profile!.surname}'
-                              : 'Имя Фамилия',
+                          
+                              profile?.email!=null ? '${profile?.email}'
+                              : 'Email',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

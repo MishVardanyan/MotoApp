@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
+import 'package:yandex_mapkit_demo/consts/server_consts.dart';
 import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
+import 'package:yandex_mapkit_demo/data/repositories/add_moto_repo.dart';
 import 'package:yandex_mapkit_demo/data/repositories/moto_repo.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  final _trackerIdController = TextEditingController();
   double _bottomSheetHeight = 230;
   List<MotoModel> motos = [];
   void toggleBottomSheet() {
@@ -136,38 +139,73 @@ class _HomeScreen extends State<HomeScreen> {
                 ),
                 color: Color(0xffF3D34C),
               ),
-              child: Column(
-                children: [
-                  Container(
-                    height: 20,
-                    child: IconButton(
-                      icon: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Color(0xFF6C6C6C),
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.15,
-                        height: 3,
-                      ),
-                      onPressed: toggleBottomSheet,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 0, left: 20),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "МОЙ ТРАНСПОРТ",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: Stack(
+  children: [
+    Positioned(
+  top: 7,
+  left: MediaQuery.of(context).size.width / 2 - 30,
+  child: GestureDetector(
+    onTap: toggleBottomSheet, 
+    child: Container(
+      width: 70,
+      height: 6,
+      decoration: BoxDecoration(
+        color: Color(0xFF6C6C6C),
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+  ),
+),
+
+    Positioned(
+      left: 20,
+      bottom: 5,
+      child: Text(
+        "МОЙ ТРАНСПОРТ",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+    ),
+    Positioned(
+      right: 5,
+      top: 5,
+      child: IconButton(
+        icon: Icon(Icons.add, size: 35,color: Colors.black,),
+        onPressed: ()=>{showDialog<String>(
+            context: context,
+            builder:
+                (BuildContext context) => AlertDialog(
+                  title: const Text('Добавить мотоцилк'),
+                  content: Container(
+                    child: TextFormField(
+                controller: _trackerIdController,
+                decoration: const InputDecoration(labelText: 'Трекер ИД'),
+                keyboardType: TextInputType.emailAddress,
+                
               ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('отмена'),
+                    ),
+                    TextButton(
+                      onPressed: ()  async => await addMoto(_trackerIdController.text) == 200? ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Мотоцикл успешно добавлен')),):ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('неверный трекер ИД')),),
+                      child: const Text('добавить'),
+                    ),
+                  ],
+                ),
+          ),},
+      ),
+    ),
+  ],
+),
+
             ),
             Expanded(
               child: _bottomSheetHeight == 230

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yandex_mapkit_demo/consts/server_consts.dart';
 import 'package:yandex_mapkit_demo/data/models/news_model.dart';
 import 'package:yandex_mapkit_demo/data/repositories/news_repo.dart';
 
@@ -99,7 +100,7 @@ class _NewsScreen extends State<NewsScreen> {
                                             topLeft: Radius.circular(25),
                                           ),
                                           child: Image.network(
-                                            news.image,
+                                            url+ news.image,
                                             width: double.infinity,
                                             height: MediaQuery.of(context)
                                                     .size

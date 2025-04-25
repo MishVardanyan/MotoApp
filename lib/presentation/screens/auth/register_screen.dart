@@ -14,6 +14,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _trackerIdController = TextEditingController();
   bool _isLoading = false;
 
   Future<void> _register() async {
@@ -30,10 +31,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: jsonEncode({
           'email': _emailController.text,
           'password': _passwordController.text,
+          'trackerId': _trackerIdController.text
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Регистрация прошла успешно')),
         );
@@ -41,13 +43,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context,
           MaterialPageRoute(builder: (_) => const LoginScreen()),
         );
-      } else if (response.statusCode == 409) {
+      } else if (response.statusCode == 400) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Пользователь уже существует')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Неверные данные или ошибка')),
+          const SnackBar(content: Text('Неверный трекер ID')),
         );
       }
     } catch (e) {
@@ -87,6 +89,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 validator: (value) => (value == null || value.length < 6)
                     ? 'Минимум 6 символов'
                     : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _trackerIdController,
+                decoration: const InputDecoration(labelText: 'Трекер ИД'),
+                keyboardType: TextInputType.emailAddress,
+                
               ),
               const SizedBox(height: 24),
               SizedBox(
