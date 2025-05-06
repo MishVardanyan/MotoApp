@@ -38,7 +38,7 @@ final GoRouter router = GoRouter(
       path: '/register',
       pageBuilder: (context, state) => _buildTransitionPage(state, const RegisterScreen()),
     ),
-
+    
     ShellRoute(
       builder: (context, state, child) => BottomNavScreen(child: child),
       routes: [

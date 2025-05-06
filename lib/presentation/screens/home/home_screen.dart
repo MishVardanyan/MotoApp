@@ -33,52 +33,121 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   Future<void> loadMotos() async {
-    motos = await fetchMotoData();
-    bool _navigated = false;
-    setState(() {
-      for (var element in motos) {
-        final id = 'point_${element.id}';
-        if (element.currentLocation?.latitude != null &&
-            element.currentLocation?.longitude != null) {
-          if (!_placemarks.any((p) => p.mapId.value == id)) {
-            _placemarks.add(
-              PlacemarkMapObject(
-                  text: PlacemarkText(
-                    text: '${element.model.name}\n${''}\n${'Ленинский'}',
-                    style: PlacemarkTextStyle(
-                        size: 12,
-                        color: Colors.black,
-                        outlineColor: Colors.white,
-                        placement: TextStylePlacement.right,
-                        offset: -15.0,
-                        offsetFromIcon: true),
-                  ),
-                  mapId: MapObjectId('point_${element.id}'),
-                  point: Point(
-                      latitude: element.currentLocation!.latitude,
-                      longitude: element.currentLocation!.longitude),
-                  icon: PlacemarkIcon.single(PlacemarkIconStyle(
-                      image: BitmapDescriptor.fromAssetImage(
-                          'assets/icons/geo_icon.png'),
-                      scale: 4.0,
-                      anchor: Offset(0.2, 0.9))),
-                  opacity: 1.0,
-                  onTap: (mapObject, point) {
-                    if (_navigated) return;
-                    _navigated = true;
+  motos = await fetchMotoData();
+  bool _navigated = false;
 
-                    context
-                        .push('/home/moto-details', extra: element)
-                        .then((_) {
-                      _navigated = false;
-                    });
-                  }),
-            );
-          }
-        }
+  final newPlacemarks = <PlacemarkMapObject>[];
+  final points = <Point>[];
+
+  for (var element in motos) {
+    final id = 'point_${element.id}';
+    final location = element.currentLocation;
+    if (location?.latitude != null && location?.longitude != null) {
+      points.add(Point(
+        latitude: location!.latitude,
+        longitude: location.longitude,
+      ));
+
+      if (!_placemarks.any((p) => p.mapId.value == id)) {
+        newPlacemarks.add(
+          PlacemarkMapObject(
+            text: PlacemarkText(
+              text: '${element.model.name}\n${''}\n${'Ленинский'}',
+              style: PlacemarkTextStyle(
+                size: 12,
+                color: Colors.black,
+                outlineColor: Colors.white,
+                placement: TextStylePlacement.right,
+                offset: -15.0,
+                offsetFromIcon: true,
+              ),
+            ),
+            mapId: MapObjectId(id),
+            point: Point(
+              latitude: location.latitude,
+              longitude: location.longitude,
+            ),
+            icon: PlacemarkIcon.single(
+              PlacemarkIconStyle(
+                image: BitmapDescriptor.fromAssetImage(
+                    'assets/icons/geo_icon.png'),
+                scale: 4.0,
+                anchor: Offset(0.2, 0.9),
+              ),
+            ),
+            opacity: 1.0,
+            onTap: (mapObject, point) {
+              if (_navigated) return;
+              _navigated = true;
+              context.push('/home/moto-details', extra: element).then((_) {
+                _navigated = false;
+              });
+            },
+          ),
+        );
       }
-    });
+    }
   }
+
+  setState(() {
+    _placemarks.clear();
+    _placemarks.addAll(newPlacemarks);
+  });
+
+  if (points.length == 1) {
+    await _mapController.moveCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: points.first,
+          zoom: 15.0,
+        ),
+      ),
+      animation: const MapAnimation(
+        type: MapAnimationType.smooth,
+        duration: 1,
+      ),
+    );
+  } else if (points.length > 1) {
+    final minLat = points.map((p) => p.latitude).reduce((a, b) => a < b ? a : b);
+    final maxLat = points.map((p) => p.latitude).reduce((a, b) => a > b ? a : b);
+    final minLon = points.map((p) => p.longitude).reduce((a, b) => a < b ? a : b);
+    final maxLon = points.map((p) => p.longitude).reduce((a, b) => a > b ? a : b);
+
+    final centerLat = (minLat + maxLat) / 2;
+    final centerLon = (minLon + maxLon) / 2;
+    final maxDiff = [
+      (maxLat - minLat).abs(),
+      (maxLon - minLon).abs(),
+    ].reduce((a, b) => a > b ? a : b);
+
+    double zoom;
+    if (maxDiff < 0.01) {
+      zoom = 16;
+    } else if (maxDiff < 0.05) {
+      zoom = 14;
+    } else if (maxDiff < 0.1) {
+      zoom = 12;
+    } else if (maxDiff < 0.5) {
+      zoom = 10;
+    } else {
+      zoom = 8;
+    }
+
+    await _mapController.moveCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: Point(latitude: centerLat, longitude: centerLon),
+          zoom: zoom,
+        ),
+      ),
+      animation: const MapAnimation(
+        type: MapAnimationType.smooth,
+        duration: 1,
+      ),
+    );
+  }
+}
+
 
   String _formatLastUsedText(DateTime lastUsed) {
     final now = DateTime.now();
@@ -108,16 +177,6 @@ class _HomeScreen extends State<HomeScreen> {
         child: YandexMap(
           onMapCreated: (controller) async {
             _mapController = controller;
-            await _mapController.moveCamera(
-              CameraUpdate.newCameraPosition(
-                const CameraPosition(
-                  target: Point(latitude: 55.7558, longitude: 37.6173),
-                  zoom: 8.0,
-                ),
-              ),
-              animation: const MapAnimation(
-                  type: MapAnimationType.smooth, duration: 1),
-            );
           },
           mapObjects: _placemarks,
         ),
@@ -178,11 +237,11 @@ class _HomeScreen extends State<HomeScreen> {
             context: context,
             builder:
                 (BuildContext context) => AlertDialog(
-                  title: const Text('Добавить мотоцилк'),
+                  title: const Text('Добавить транспорт'),
                   content: Container(
                     child: TextFormField(
                 controller: _trackerIdController,
-                decoration: const InputDecoration(labelText: 'Трекер ИД'),
+                decoration: const InputDecoration(labelText: 'ID транспорта'),
                 keyboardType: TextInputType.emailAddress,
                 
               ),
@@ -193,9 +252,23 @@ class _HomeScreen extends State<HomeScreen> {
                       child: const Text('отмена'),
                     ),
                     TextButton(
-                      onPressed: ()  async => await addMoto(_trackerIdController.text) == 200? ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Мотоцикл успешно добавлен')),):ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('неверный трекер ИД')),),
+                      onPressed: () async {
+  final result = await addMoto(_trackerIdController.text);
+  
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        result == 200
+          ? 'Мотоцикл успешно добавлен'
+          : 'неверный трекер ИД',
+      ),
+    ),
+  );
+  setState(() {
+    
+  });
+},
+
                       child: const Text('добавить'),
                     ),
                   ],

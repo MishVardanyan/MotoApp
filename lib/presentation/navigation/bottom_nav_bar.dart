@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class BottomNavScreen extends StatelessWidget {
+class BottomNavScreen extends StatefulWidget {
   final Widget child;
-
   const BottomNavScreen({required this.child, super.key});
 
   @override
+  State<BottomNavScreen> createState() => _BottomNavScreenState();
+}
+
+class _BottomNavScreenState extends State<BottomNavScreen> {
+  int refreshCounter = 0;
+
+  @override
   Widget build(BuildContext context) {
-    String route = '';
-    final location = route = GoRouterState.of(context).uri.toString();
+    final location = GoRouterState.of(context).uri.toString();
+
     int selectedIndex = 1;
     if (location.startsWith('/news')) selectedIndex = 0;
     if (location.startsWith('/home')) selectedIndex = 1;
@@ -23,34 +29,45 @@ class BottomNavScreen extends StatelessWidget {
     ];
 
     void _onItemTapped(int index) {
-      if (route == "/news" || route == "/account") {
-        context.pop();
-      }
+      final currentLocation = GoRouterState.of(context).uri.toString();
+
       switch (index) {
         case 0:
-          context.push('/news');
+          if (currentLocation != '/news') {
+            context.go('/news');
+          }
           break;
+
         case 1:
-          context.go('/home');
+          if (currentLocation == '/home') {
+            setState(() {
+              refreshCounter++; // 🔁 թարմացնում է child-ը
+            });
+          } else {
+            context.go('/home');
+          }
           break;
+
         case 2:
-          context.push('/account');
+          if (currentLocation != '/account') {
+            context.go('/account');
+          }
           break;
       }
     }
 
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: Duration(milliseconds: 400),
-        switchInCurve: Curves.easeIn,
-        switchOutCurve: Curves.easeOut,
+        duration: const Duration(milliseconds: 400),
         transitionBuilder: (child, animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
-        child: child,
+        child: Builder(
+          builder: (context) => Container(
+            key: ValueKey('home-$refreshCounter-$location'),
+            child: widget.child,
+          ),
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(color: Colors.grey[300]),

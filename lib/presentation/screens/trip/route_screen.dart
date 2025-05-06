@@ -24,6 +24,9 @@ class RouteScreen extends StatefulWidget {
 class _RouteScreenState extends State<RouteScreen> {
   late YandexMapController mapController;
   final MapObjectId polylineId = const MapObjectId('route_line');
+  double totalDistanceKm = 0;
+double averageSpeed = 0;
+
 
   List<MapObject> mapObjects = [];
   List<RouteLocationModel> routePoints = [];
@@ -51,7 +54,7 @@ class _RouteScreenState extends State<RouteScreen> {
     }).toList();
 
     // --- Calculate total distance in kilometers
-    double totalDistanceKm = 0;
+    totalDistanceKm = 0;
     for (int i = 0; i < polylinePoints.length - 1; i++) {
       totalDistanceKm += calculateDistance(
         polylinePoints[i],
@@ -65,7 +68,7 @@ class _RouteScreenState extends State<RouteScreen> {
     final durationInHours = endTime.difference(startTime).inSeconds / 3600;
 
     // --- Calculate average speed in km/h
-    final averageSpeed = durationInHours > 0
+    averageSpeed = durationInHours > 0
         ? totalDistanceKm / durationInHours
         : 0;
 
@@ -110,28 +113,10 @@ class _RouteScreenState extends State<RouteScreen> {
         ),
         opacity: 1.0);
 
-    // --- Find middle point for showing data
-    final midIndex = polylinePoints.length ~/ 3.5;
-    final Point midPoint = polylinePoints[midIndex];
-
-    final PlacemarkMapObject distancePlacemark = PlacemarkMapObject(
-        mapId: const MapObjectId('distance_label'),
-        point: polylinePoints.last,
-        text: PlacemarkText(
-          text:
-              '${totalDistanceKm.toStringAsFixed(2)} км\n${averageSpeed.toStringAsFixed(1)} км/ч',
-          style: PlacemarkTextStyle(
-              size: 14,
-              color: Colors.black,
-              outlineColor: Colors.white,
-              placement: TextStylePlacement.top,
-              offset: 50,
-              offsetFromIcon: false),
-        ),
-        opacity: 1.0);
+ 
 
     setState(() {
-      mapObjects = [polyline, startPlacemark, endPlacemark, distancePlacemark];
+      mapObjects = [polyline, startPlacemark, endPlacemark,];
     });
 
     await mapController.moveCamera(
@@ -195,21 +180,42 @@ class _RouteScreenState extends State<RouteScreen> {
                             color: Colors.black,
                           ),
                         ),
-                        Row(
+                        
+                        Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const ImageIcon(
-                                AssetImage('assets/icons/time_icon.png')),
-                            const SizedBox(width: 4),
+                            Row(children: [ Icon(Icons.access_time),
+                            const SizedBox(width: 2),
                             Text(
                               widget.date,
                               style: const TextStyle(
                                 fontSize: 16,
                               ),
+                            ),],),
+                            SizedBox(height: 7,),
+                           Row(children: [
+                            Icon(Icons.route),
+                            Text(
+                              totalDistanceKm.toStringAsFixed(1)+'км',
+                              style: const TextStyle(
+                                fontSize: 13,
+                              ),
                             ),
+                            SizedBox(width: 7,),
+                            Icon(Icons.speed),
+                            Text(
+                              averageSpeed.toStringAsFixed(1)+'км/ч',
+                              style: const TextStyle(
+                                fontSize: 13,
+                              ),
+                            ),
+                           ],)
+                           
+                            
                           ],
                         ),
-                      ]))
+                      ])
+                      )
                 ],
               ),
             ),
