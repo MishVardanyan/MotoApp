@@ -159,14 +159,16 @@ class _MotoDetailsScreen extends State<MotoDetailsScreen> {
                                 'Год выпуска',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Text(motoList[0].year.toString()),
+                              
+                              Text(widget.moto.year?.toString()??'Неизвестно'),
                               SizedBox(
                                 height: 30,
                               ),
                               Text('Макс. скорость',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              Text(widget.moto.model.maxSpeed.toString())
+                           Text((widget.moto.model.maxSpeed?.toString() ?? 'Неизвестно') + "  км/ч"),
+
                             ],
                           ),
                           Column(
@@ -175,15 +177,15 @@ class _MotoDetailsScreen extends State<MotoDetailsScreen> {
                               Text('Mощность',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              Text(widget.moto.model.engineCapacity.toString() +
-                                  " л/с"),
+                              Text((widget.moto.model.engineCapacity?.toString() ?? 'Неизвестно') + " л/с"),
+
                               SizedBox(
                                 height: 30,
                               ),
                               Text('Вес',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              Text(motoList[0].specifications.spec3)
+                              Text(widget.moto.model.weight?.toString()?? 'Неизвестно')
                             ],
                           ),
                         ],

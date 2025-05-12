@@ -29,6 +29,13 @@ class _NewsScreen extends State<NewsScreen> {
     getNews();
   }
 
+ String _formatLastUsedText(String lastUsed) {
+  final parsedDate = DateTime.tryParse(lastUsed);
+  if (parsedDate == null) return 'Неизвестно';
+  final formattedDate = parsedDate.toIso8601String().split('T')[0];
+  return formattedDate;
+}
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -124,7 +131,7 @@ class _NewsScreen extends State<NewsScreen> {
                                             ),
                                             SizedBox(height: 4),
                                             Text(
-                                              news.date,
+                                              _formatLastUsedText(news.date),
                                               style: TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.grey,
