@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yandex_mapkit_demo/data/models/news_model.dart';
+import 'package:moto_track/data/models/news_model.dart';
 
-/// Получение новостей с сервера
 Future<List<NewsModel>> fetchNews() async {
   final url = Uri.parse('http://5.188.114.223:4000/api/news');
   final prefs = await SharedPreferences.getInstance();

@@ -1,6 +1,6 @@
+import 'package:moto_track/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
-import 'package:yandex_mapkit_demo/services/auth_service.dart';
 import 'presentation/navigation/app_routes.dart';
 
 Future<void> main() async {
@@ -12,7 +12,9 @@ Future<void> main() async {
   ]);
 
   await AuthService.loadToken();
-
+if (await AuthService.hasCredentials()) {
+  await AuthService.autoLogin();
+}
   runApp(const MyApp());
 }
 

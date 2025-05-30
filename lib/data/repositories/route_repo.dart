@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yandex_mapkit_demo/data/models/trip_model.dart';
+import 'package:moto_track/data/models/trip_model.dart';
 
 /// Получение данных маршрута по его ID
 Future<List<RouteLocationModel>> fetchRouteData(String routeId) async {

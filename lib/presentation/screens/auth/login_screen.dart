@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:yandex_mapkit_demo/data/repositories/auth_repo.dart';
+import 'package:moto_track/data/repositories/auth_repo.dart';
+import 'package:moto_track/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,14 +16,21 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadSavedCredentials();
+  }
+
   void handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     final statusCode = await login(
-      _emailController.text,
-      _passwordController.text,
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
     );
 
     setState(() => _isLoading = false);
@@ -31,6 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Вход выполнен успешно!')),
       );
+      await AuthService.saveEmail(_emailController.text.trim());
+      await AuthService.savePassword(_passwordController.text.trim());
       context.go('/home');
     } else if (statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,6 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Ошибка сервера!')),
       );
+    }
+  }
+   Future<void> _loadSavedCredentials() async {
+    final savedEmail = await AuthService.getEmail();
+    final savedPassword = await AuthService.getPassword();
+
+    if (savedEmail != null) {
+      _emailController.text = savedEmail;
+    }
+    if (savedPassword != null) {
+      _passwordController.text = savedPassword;
     }
   }
 

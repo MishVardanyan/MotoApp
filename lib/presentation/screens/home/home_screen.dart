@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
-import 'package:yandex_mapkit_demo/consts/server_consts.dart';
-import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
-import 'package:yandex_mapkit_demo/data/repositories/add_moto_repo.dart';
-import 'package:yandex_mapkit_demo/data/repositories/moto_repo.dart';
+import 'package:moto_track/consts/server_consts.dart';
+import 'package:moto_track/data/models/moto_model.dart';
+import 'package:moto_track/data/repositories/add_moto_repo.dart';
+import 'package:moto_track/data/repositories/moto_repo.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,8 +24,8 @@ class _HomeScreen extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    loadMotos();
   }
+  
 
   double calculateScale(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -52,7 +52,7 @@ class _HomeScreen extends State<HomeScreen> {
         newPlacemarks.add(
           PlacemarkMapObject(
             text: PlacemarkText(
-              text: '${element.model.name}\n${''}\n${'Ленинский'}',
+              text: '${element.model.name}',
               style: PlacemarkTextStyle(
                 size: 12,
                 color: Colors.black,
@@ -177,6 +177,7 @@ class _HomeScreen extends State<HomeScreen> {
         child: YandexMap(
           onMapCreated: (controller) async {
             _mapController = controller;
+            await loadMotos();  
           },
           mapObjects: _placemarks,
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:yandex_mapkit_demo/consts/server_consts.dart';
-import 'package:yandex_mapkit_demo/data/models/news_model.dart';
-import 'package:yandex_mapkit_demo/data/repositories/news_repo.dart';
+import 'package:moto_track/consts/server_consts.dart';
+import 'package:moto_track/data/models/news_model.dart';
+import 'package:moto_track/data/repositories/news_repo.dart';
 
 class NewsScreen extends StatefulWidget {
   final VoidCallback? onBack;

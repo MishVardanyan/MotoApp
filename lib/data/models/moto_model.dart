@@ -68,12 +68,12 @@ class MotoDetails {
     return MotoDetails(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      maxSpeed: int.parse(json['max_speed'].toString(), radix: 16),
-      engineCapacity: int.parse(json['engine_capacity'].toString(), radix: 16),
+      maxSpeed: int.parse(json['max_speed'].toString(), ),
+      engineCapacity: int.parse(json['engine_capacity'].toString(),),
       imageUrl: json['image_url'] ?? '',
       createdAt: DateTime.parse(json['created_at']),
       weight: json['weight'] != null
-          ? int.parse(json['weight'].toString(), radix: 16)
+          ? int.parse(json['weight'].toString(),)
           : null,
     );
   }

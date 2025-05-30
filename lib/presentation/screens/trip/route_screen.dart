@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
-import 'package:yandex_mapkit_demo/data/models/trip_model.dart';
-import 'package:yandex_mapkit_demo/data/repositories/route_repo.dart';
-import 'dart:math'; // --- Ավելացրել ենք distance calculation-ի համար
+import 'package:moto_track/data/models/trip_model.dart';
+import 'package:moto_track/data/repositories/route_repo.dart';
+import 'dart:math'; 
 
 class RouteScreen extends StatefulWidget {
   final String routeId;
@@ -83,7 +83,7 @@ double averageSpeed = 0;
         mapId: const MapObjectId('start_point'),
         point: polylinePoints.first,
         text: PlacemarkText(
-          text: '${widget.motoName}\n${''}\n${'Ленинский'}',
+          text: '${widget.motoName}',
           style: PlacemarkTextStyle(
               size: 12,
               color: Colors.black,

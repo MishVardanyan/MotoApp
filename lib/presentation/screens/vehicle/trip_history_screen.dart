@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:yandex_mapkit_demo/data/models/trip_history_model.dart';
+import 'package:moto_track/data/models/trip_history_model.dart';
 
 class TripHistoryWidget extends StatelessWidget {
   final List<TripModel> routes;
@@ -57,8 +57,8 @@ class TripHistoryWidget extends StatelessWidget {
                                 'motoName': motoName,
                                 'index': index,
                                 'date': formatTimeRange(
-                                  routes[index].startTime,
-                                  routes[index].endTime,
+                                  routes[index].startTime.toLocal(),
+                                  routes[index].endTime.toLocal(),
                                 ),
                               },
                             );
@@ -88,8 +88,8 @@ class TripHistoryWidget extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           formatTimeRange(
-                                              routes[index].startTime,
-                                              routes[index].endTime),
+                                              routes[index].startTime.toLocal(),
+                                              routes[index].endTime.toLocal()),
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w400),
                                         ),

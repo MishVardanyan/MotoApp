@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:yandex_mapkit_demo/consts/server_consts.dart';
-import 'package:yandex_mapkit_demo/data/models/moto_data_model.dart';
-import 'package:yandex_mapkit_demo/data/models/moto_model.dart';
-import 'package:yandex_mapkit_demo/data/models/trip_history_model.dart';
-import 'package:yandex_mapkit_demo/data/repositories/trip_history_repo.dart';
-import 'package:yandex_mapkit_demo/presentation/screens/vehicle/trip_history_screen.dart';
+import 'package:moto_track/consts/server_consts.dart';
+import 'package:moto_track/data/models/moto_data_model.dart';
+import 'package:moto_track/data/models/moto_model.dart';
+import 'package:moto_track/data/models/trip_history_model.dart';
+import 'package:moto_track/data/repositories/trip_history_repo.dart';
+import 'package:moto_track/presentation/screens/vehicle/trip_history_screen.dart';
 
 class MotoDetailsScreen extends StatefulWidget {
   final MotoModel moto;
@@ -185,7 +185,7 @@ class _MotoDetailsScreen extends State<MotoDetailsScreen> {
                               Text('Вес',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              Text(widget.moto.model.weight?.toString()?? 'Неизвестно')
+                              Text((widget.moto.model.weight?.toString()?? 'Неизвестно') +'кг')
                             ],
                           ),
                         ],
