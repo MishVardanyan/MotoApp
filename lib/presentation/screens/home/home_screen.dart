@@ -31,6 +31,11 @@ class _HomeScreen extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     return screenWidth < 400 ? 3.0 : 4.0;
   }
+  String shortenText(String text, int maxLength) {
+  if (text.length <= maxLength) return text;
+  return '${text.substring(0, maxLength)}...';
+}
+
 
   Future<void> loadMotos() async {
   motos = await fetchMotoData();
@@ -52,14 +57,14 @@ class _HomeScreen extends State<HomeScreen> {
         newPlacemarks.add(
           PlacemarkMapObject(
             text: PlacemarkText(
-              text: '${element.model.name}',
+              text: shortenText('${element.model.name}', 12) + '\n ',
+
               style: PlacemarkTextStyle(
-                size: 12,
+                size: 11,
                 color: Colors.black,
                 outlineColor: Colors.white,
                 placement: TextStylePlacement.right,
                 offset: -15.0,
-                offsetFromIcon: true,
               ),
             ),
             mapId: MapObjectId(id),

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moto_track/data/models/user_model.dart';
 import 'package:moto_track/data/repositories/profile_repo.dart';
 import 'package:moto_track/services/auth_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -99,16 +100,24 @@ class _AccountScreen extends State<AccountScreen> {
                   ),
                   const SizedBox(height: 16),
                   GestureDetector(
-                    onTap: () {},
-                    child: const Text(
-                      'Перейти на сайт',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
+  onTap: () async {
+    const url = 'https://gsbmoto.com/';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Не удалось открыть $url';
+    }
+  },
+  child: const Text(
+    'Перейти на сайт',
+    style: TextStyle(
+      fontSize: 14,
+      color: Colors.black,
+      decoration: TextDecoration.underline,
+    ),
+  ),
+),
+
                 ],
               ),
             ),
