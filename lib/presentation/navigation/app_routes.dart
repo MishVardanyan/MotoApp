@@ -76,10 +76,27 @@ final GoRouter router = GoRouter(
                       pageBuilder: (context, state) {
                         final data = state.extra as Map<String, dynamic>;
 
-                        final DateTime utcDate = data['date'] as DateTime;
-                        final DateTime localDate = utcDate.toLocal();
-                        final String formattedDate =
-                            DateFormat('HH:mm dd.MM.yyyy').format(localDate);
+                        List<String> parts = data['date'].split("–");
+
+// Trim spaces
+                        String startTimeStr = parts[0].trim();
+                        String endTimeStr = parts[1].trim();
+
+// Parse to DateTime in UTC or a known timezone
+                        DateTime now = DateTime.now();
+                        DateTime startUtc = DateTime.parse(
+                            "${now.toIso8601String().substring(0, 10)}T$startTimeStr:00Z");
+                        DateTime endUtc = DateTime.parse(
+                            "${now.toIso8601String().substring(0, 10)}T$endTimeStr:00Z");
+
+// Convert to local
+                        DateTime startLocal = startUtc.toLocal();
+                        DateTime endLocal = endUtc.toLocal();
+
+// Format the result
+                        String localTimeRange =
+                            "${startLocal.hour.toString().padLeft(2, '0')}:${startLocal.minute.toString().padLeft(2, '0')} – "
+                            "${endLocal.hour.toString().padLeft(2, '0')}:${endLocal.minute.toString().padLeft(2, '0')}";
 
                         return _buildTransitionPage(
                           state,
@@ -87,7 +104,7 @@ final GoRouter router = GoRouter(
                             routeId: data['routeId'],
                             motoName: data['motoName'],
                             index: data['index'],
-                            date: formattedDate,
+                            date: localTimeRange,
                           ),
                         );
                       },
